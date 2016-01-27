@@ -10,6 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import statsmodels.api as sm
+import statsmodels.formula.api as smf
 
 # ----------------
 # GENERATE DATA
@@ -28,3 +29,25 @@ test_X, test_y = X[700:], y[700:]
 
 train_df = pd.DataFrame({"X": train_X, "y": train_y})
 test_df = pd.DataFrame({"X": test_X, "y": test_y})
+
+# ----------------
+# MODEL DATA
+# ----------------
+
+# Linear Polynomial Fit
+poly_line = smf.ols(formula="y ~ 1 + X", data=train_df).fit()
+print ""
+print poly_line.summary()
+print "Intercept: ", poly_line.params[0]
+print "Coefficient: ", poly_line.params[1]
+print "P-Value: ", poly_line.pvalues[0]
+print "R-Squared: ", poly_line.rsquared
+
+# Quadratic Polynomial Fit
+poly_quad = smf.ols(formula="y ~ 1 + X + I(X**2)", data=train_df).fit()
+print ""
+print poly_quad.summary()
+print "Intercept: ", poly_quad.params[0]
+print "Coefficient: ", poly_quad.params[1]
+print "P-Value: ", poly_quad.pvalues[0]
+print "R-Squared: ", poly_quad.rsquared

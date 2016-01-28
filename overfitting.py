@@ -51,3 +51,7 @@ print "Intercept: ", poly_quad.params[0]
 print "Coefficient: ", poly_quad.params[1]
 print "P-Value: ", poly_quad.pvalues[0]
 print "R-Squared: ", poly_quad.rsquared
+
+# ----------------
+# VISUALIZE DATA
+# ----------------

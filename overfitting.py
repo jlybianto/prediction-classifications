@@ -34,24 +34,52 @@ test_df = pd.DataFrame({"X": test_X, "y": test_y})
 # MODEL DATA
 # ----------------
 
-# Linear Polynomial Fit
-poly_line = smf.ols(formula="y ~ 1 + X", data=train_df).fit()
+# Linear Polynomial Fit of Testing Set
+poly_line_test = smf.ols(formula="y ~ 1 + X", data=test_df).fit()
 print ""
-print poly_line.summary()
-print "Intercept: ", poly_line.params[0]
-print "Coefficient: ", poly_line.params[1]
-print "P-Value: ", poly_line.pvalues[0]
-print "R-Squared: ", poly_line.rsquared
+print poly_line_test.summary()
+print "Intercept: ", poly_line_test.params[0]
+print "Coefficient: ", poly_line_test.params[1]
+print "P-Value: ", poly_line_test.pvalues[0]
+print "R-Squared: ", poly_line_test.rsquared
 
-# Quadratic Polynomial Fit
-poly_quad = smf.ols(formula="y ~ 1 + X + I(X**2)", data=train_df).fit()
+# Quadratic Polynomial Fit of Testing Set
+poly_quad_test = smf.ols(formula="y ~ 1 + X + I(X**2)", data=test_df).fit()
 print ""
-print poly_quad.summary()
-print "Intercept: ", poly_quad.params[0]
-print "Coefficient: ", poly_quad.params[1]
-print "P-Value: ", poly_quad.pvalues[0]
-print "R-Squared: ", poly_quad.rsquared
+print poly_quad_test.summary()
+print "Intercept: ", poly_quad_test.params[0]
+print "Coefficient: ", poly_quad_test.params[1]
+print "P-Value: ", poly_quad_test.pvalues[0]
+print "R-Squared: ", poly_quad_test.rsquared
+
+# Linear Polynomial Fit of Training Set
+poly_line_train = smf.ols(formula="y ~ 1 + X", data=train_df).fit()
+print ""
+print poly_line_train.summary()
+print "Intercept: ", poly_line_train.params[0]
+print "Coefficient: ", poly_line_train.params[1]
+print "P-Value: ", poly_line_train.pvalues[0]
+print "R-Squared: ", poly_line_train.rsquared
+
+# Quadratic Polynomial Fit of Training Set
+poly_quad_train = smf.ols(formula="y ~ 1 + X + I(X**2)", data=train_df).fit()
+print ""
+print poly_quad_train.summary()
+print "Intercept: ", poly_quad_train.params[0]
+print "Coefficient: ", poly_quad_train.params[1]
+print "P-Value: ", poly_quad_train.pvalues[0]
+print "R-Squared: ", poly_quad_train.rsquared
 
 # ----------------
 # VISUALIZE DATA
 # ----------------
+
+space = np.arange(0, 15, 0.5)
+plt.figure(figsize=(10, 10))
+plt.scatter(train_df["X"], train_df["y"], alpha=0.5, color="r")
+plt.scatter(test_df["X"], test_df["y"], alpha=0.5, color="b")
+plt.gca().grid(True)
+plt.xlabel("X", fontsize=14)
+plt.ylabel("Y", fontsize=14)
+plt.title("Example of Overfitting", fontsize=16)
+plt.show()

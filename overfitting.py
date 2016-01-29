@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+from matplotlib import colors
 
 # ----------------
 # GENERATE DATA
@@ -76,10 +77,11 @@ print "R-Squared: ", poly_quad_train.rsquared
 
 space = np.arange(0, 15, 0.5)
 plt.figure(figsize=(10, 10))
-plt.scatter(train_df["X"], train_df["y"], alpha=0.5, color="r")
-plt.scatter(test_df["X"], test_df["y"], alpha=0.5, color="b")
+plt.scatter(test_df["X"], test_df["y"], alpha=0.5, color="red")
+plt.scatter(train_df["X"], train_df["y"], alpha=0.5, color="blue")
 plt.gca().grid(True)
 plt.xlabel("X", fontsize=14)
 plt.ylabel("Y", fontsize=14)
+plt.xlim(0, 15)
 plt.title("Example of Overfitting", fontsize=16)
 plt.show()

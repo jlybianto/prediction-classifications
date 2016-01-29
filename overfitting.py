@@ -30,6 +30,7 @@ test_X, test_y = X[700:], y[700:]
 
 train_df = pd.DataFrame({"X": train_X, "y": train_y})
 test_df = pd.DataFrame({"X": test_X, "y": test_y})
+df = pd.DataFrame({"X": X, "y": y})
 
 # ----------------
 # MODEL DATA
@@ -71,7 +72,23 @@ print "Coefficient: ", poly_quad_test.params[1]
 print "P-Value: ", poly_quad_test.pvalues[0]
 print "R-Squared: ", poly_quad_test.rsquared
 
+# Linear Polynomial Fit of Total Set
+poly_line_total = smf.ols(formula="y ~ 1 + X", data=df).fit()
+print ""
+print poly_line_total.summary()
+print "Intercept: ", poly_line_total.params[0]
+print "Coefficient: ", poly_line_total.params[1]
+print "P-Value: ", poly_line_total.pvalues[0]
+print "R-Squared: ", poly_line_total.rsquared
 
+# Quadratic Polynomial Fit of Total Set
+poly_quad_total = smf.ols(formula="y ~ 1 + X + I(X**2)", data=df).fit()
+print ""
+print poly_quad_total.summary()
+print "Intercept: ", poly_quad_total.params[0]
+print "Coefficient: ", poly_quad_total.params[1]
+print "P-Value: ", poly_quad_total.pvalues[0]
+print "R-Squared: ", poly_quad_total.rsquared
 
 # ----------------
 # VISUALIZE DATA
@@ -82,10 +99,11 @@ plt.figure(figsize=(10, 10))
 plt.scatter(train_df["X"], train_df["y"], alpha=0.5, color="blue")
 plt.scatter(test_df["X"], test_df["y"], alpha=0.5, color="red")
 plot_line_train, = plt.plot(poly_line_train.params[0] + poly_line_train.params[1] * space, color="darkblue", label="Linear Fit of Train Set")
-plt.legend(handles=[plot_line_train], loc=2, fontsize=14)
+plot_line_total, = plt.plot(poly_line_total.params[0] + poly_line_total.params[1] * space, color="black", label="Linear Fit of Total Set")
+plt.legend(handles=[plot_line_train, plot_line_total], loc=2, fontsize=14)
 plt.gca().grid(True)
 plt.xlabel("X", fontsize=14)
 plt.ylabel("Y", fontsize=14)
 plt.xlim(0, 15)
 plt.title("Example of Overfitting", fontsize=16)
-plt.savefig("overfitting.png")
+plt.show()

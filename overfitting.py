@@ -33,7 +33,7 @@ test_df = pd.DataFrame({"X": test_X, "y": test_y})
 df = pd.DataFrame({"X": X, "y": y})
 
 # ----------------
-# MODEL DATA
+# MODEL TRAINING DATA
 # ----------------
 
 # Linear Polynomial Fit of Training Set
@@ -54,56 +54,77 @@ print "Coefficient: ", poly_quad_train.params[1]
 print "P-Value: ", poly_quad_train.pvalues[0]
 print "R-Squared: ", poly_quad_train.rsquared
 
-# Linear Polynomial Fit of Testing Set
-poly_line_test = smf.ols(formula="y ~ 1 + X", data=test_df).fit()
+# Trigonometric Polynomial Fit of Training Set
+poly_trig_train = smf.ols(formula="y ~ X + np.sin(X)", data=train_df).fit()
 print ""
-print poly_line_test.summary()
-print "Intercept: ", poly_line_test.params[0]
-print "Coefficient: ", poly_line_test.params[1]
-print "P-Value: ", poly_line_test.pvalues[0]
-print "R-Squared: ", poly_line_test.rsquared
-
-# Quadratic Polynomial Fit of Testing Set
-poly_quad_test = smf.ols(formula="y ~ 1 + X + I(X**2)", data=test_df).fit()
-print ""
-print poly_quad_test.summary()
-print "Intercept: ", poly_quad_test.params[0]
-print "Coefficient: ", poly_quad_test.params[1]
-print "P-Value: ", poly_quad_test.pvalues[0]
-print "R-Squared: ", poly_quad_test.rsquared
-
-# Linear Polynomial Fit of Total Set
-poly_line_total = smf.ols(formula="y ~ 1 + X", data=df).fit()
-print ""
-print poly_line_total.summary()
-print "Intercept: ", poly_line_total.params[0]
-print "Coefficient: ", poly_line_total.params[1]
-print "P-Value: ", poly_line_total.pvalues[0]
-print "R-Squared: ", poly_line_total.rsquared
-
-# Quadratic Polynomial Fit of Total Set
-poly_quad_total = smf.ols(formula="y ~ 1 + X + I(X**2)", data=df).fit()
-print ""
-print poly_quad_total.summary()
-print "Intercept: ", poly_quad_total.params[0]
-print "Coefficient: ", poly_quad_total.params[1]
-print "P-Value: ", poly_quad_total.pvalues[0]
-print "R-Squared: ", poly_quad_total.rsquared
+print poly_trig_train.summary()
+print "Intercept: ", poly_trig_train.params[0]
+print "Coefficient: ", poly_trig_train.params[1]
+print "P-Value: ", poly_trig_train.pvalues[0]
+print "R-Squared: ", poly_trig_train.rsquared
 
 # ----------------
-# VISUALIZE DATA
+# VISUALIZE TRAINING DATA
 # ----------------
 
-space = np.arange(0, 15, 0.5)
-plt.figure(figsize=(10, 10))
-plt.scatter(train_df["X"], train_df["y"], alpha=0.5, color="blue")
-plt.scatter(test_df["X"], test_df["y"], alpha=0.5, color="red")
-plot_line_train, = plt.plot(poly_line_train.params[0] + poly_line_train.params[1] * space, color="darkblue", label="Linear Fit of Train Set")
-plot_line_total, = plt.plot(poly_line_total.params[0] + poly_line_total.params[1] * space, color="black", label="Linear Fit of Total Set")
-plt.legend(handles=[plot_line_train, plot_line_total], loc=2, fontsize=14)
+# Visualize training set data (approximately 70% of the whole data set) to be used to model.
+print ""
+plt.figure()
+plt.plot(train_df["X"], train_df["y"], "o")
 plt.gca().grid(True)
 plt.xlabel("X", fontsize=14)
 plt.ylabel("Y", fontsize=14)
-plt.xlim(0, 15)
-plt.title("Example of Overfitting", fontsize=16)
-plt.show()
+plt.title("Example of Overfitting - Training Set Data", fontsize=16)
+plt.savefig("training_data.png")
+
+# ----------------
+# MODEL + VISUALIZE TEST DATA
+# ----------------
+
+# Modeling testing set data (30% of the data) with the Linear Polynomial Fit.
+predicted_y_line = poly_line_train.predict(test_df["X"])[700:]
+resid_line = predicted_y_line - test_df["y"]
+mse = sum((predicted_y_line - test_df["y"]) ** 2) / (len(predicted_y_line))
+print "Mean Square Error (MSE) of Linear Fit = %s" %mse
+
+plt.figure()
+plt.plot(test_df["X"], test_df["y"], "o")
+plt.plot(test_df["X"], predicted_y_line, "r")
+plt.plot(test_df["X"], resid_line, "g")
+plt.gca().grid(True)
+plt.xlabel("X", fontsize=14)
+plt.ylabel("Y", fontsize=14)
+plt.title("Test Set with Linear Polynomial Fit of Training Set", fontsize=16)
+plt.savefig("line_fit.png")
+
+# Modeling testing set data (30% of the data) with the Quadratic Polynomial Fit.
+predicted_y_quad = poly_quad_train.predict(test_df["X"])[700:]
+resid_quad = predicted_y_quad - test_df["y"]
+mse = sum((predicted_y_quad - test_df["y"]) ** 2) / (len(predicted_y_quad))
+print "Mean Square Error (MSE) of Quadratic Fit = %s" %mse
+
+plt.figure()
+plt.plot(test_df["X"], test_df["y"], "o")
+plt.plot(test_df["X"], predicted_y_quad, "r")
+plt.plot(test_df["X"], resid_quad, "g")
+plt.gca().grid(True)
+plt.xlabel("X", fontsize=14)
+plt.ylabel("Y", fontsize=14)
+plt.title("Test Set with Quadratic Polynomial Fit of Training Set", fontsize=16)
+plt.savefig("quad_fit.png")
+
+# Modeling testing set data (30% of the data) with the Trigonometric Polynomial Fit.
+predicted_y_trig = poly_trig_train.predict(test_df["X"])[700:]
+resid_trig = predicted_y_trig - test_df["y"]
+mse = sum((predicted_y_trig - test_df["y"]) ** 2) / (len(predicted_y_trig))
+print "Mean Square Error (MSE) of Trigonometric Fit = %s" %mse
+
+plt.figure()
+plt.plot(test_df["X"], test_df["y"], "o")
+plt.plot(test_df["X"], predicted_y_trig, "r")
+plt.plot(test_df["X"], resid_trig, "g")
+plt.gca().grid(True)
+plt.xlabel("X", fontsize=14)
+plt.ylabel("Y", fontsize=14)
+plt.title("Test Set with Trigonometric Polynomial Fit of Training Set", fontsize=16)
+plt.savefig("trig_fit.png")
